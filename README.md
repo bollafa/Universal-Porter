@@ -2,7 +2,7 @@
 Universal Porter, ports +14 different 3D file formats to the M2 File format owned by Blizzard!
 It will be able to port all file types supported by Assimp which are:
 
-Common interchange formats
+##Common interchange formats
 
     Autodesk ( .fbx )
     Collada ( .dae )
@@ -24,18 +24,18 @@ Common interchange formats
     Milkshape 3D ( .ms3d )
     * TrueSpace ( .cob,.scn )
 
-Motion Capture Formats
+##Motion Capture Formats
 
     Biovision BVH ( .bvh )
     * CharacterStudio Motion ( .csm )
 
-Graphics Engine Formats
+##Graphics Engine Formats
 
     Ogre XML ( .xml )
     Irrlicht Mesh ( .irrmesh )
     * Irrlicht Scene ( .irr )
 
-Game file formats
+##Game file formats
 
     Quake I ( .mdl )
     Quake II ( .md2 )
@@ -47,7 +47,7 @@ Game file formats
     *Open Game Engine Exchange ( .ogex )
     *Unreal ( .3d )
 
-Other file formats
+##Other file formats
 
     BlitzBasic 3D ( .b3d )
     Quick3D ( .q3d,.q3s )
