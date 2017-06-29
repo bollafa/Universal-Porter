@@ -72,6 +72,17 @@ namespace UniversalPorter
 	public:
 		BasicDataObject(Type _val) : mValue(_val) {}
 	};
+	template <>
+	class BasicDataObject<std::string> // Basic Abstraction for common types like int or user-defined ones like C3Vector without special interactions
+	{
+	private:
+		std::string mValue;
+	protected:
+		size_t GetSize() { return mValue.length(); } // Not used! It 'isnt' really used anywhere else ( or it shouldn't) now that we know stream.tellp()
+		const void write(std::ofstream& stream) { stream << mValue.c_str() << '\0'; };
+	public:
+		BasicDataObject(std::string _val) : mValue(_val) {}
+	};
 	// Forward Declaration
 	template <typename Type>
 	class DataChunk 
@@ -120,7 +131,8 @@ namespace UniversalPorter
 		void AddValue( DataObject<Type> _in) { mValues.push_back(_in); }
 		void SetM2ArrayPointer(const uint32_t& _rel) { mM2Array.SetInternalOffset(_rel ); }
 		void SetTestMode(const bool& _mode) { bTestMode = _mode; } // Bad practice , delete when better approach exists
-		
+	
+		const M2Array& GetRelArray() { return mM2Array; }
 		DataChunk() {}
 	};
 	class HeaderPolicy
@@ -148,7 +160,21 @@ namespace UniversalPorter
 			uint32_t NumSkinProfiles = 0;
 			//#endif
 			M2Array colors; // I'll implement them if they are needed, but honestly i dont know what they do
+			M2Array textures;
+			/* Let's see : */
 
+			M2Array texture_weights;            // Transparency of textures.
+/*#if  VERSION <= BC
+			M2Array< ? > unknown;
+#endif*/
+			M2Array texture_transforms;
+			M2Array replacable_texture_lookup;
+			M2Array materials;                       // Blending modes / render flags.
+			M2Array bone_lookup_table;
+			M2Array texture_lookup_table;
+			M2Array tex_unit_lookup_table;             // >= Cata : unused
+			M2Array transparency_lookup_table;
+			M2Array texture_transforms_lookup_table;
 			InternalData() {}
 		}mInternalData;
 	protected:
@@ -172,7 +198,17 @@ namespace UniversalPorter
 		// WOHOOOOOOOOOOOOOOOOOOOOOOOOO :D
 	
 	}
+	template<>
+	inline void DataChunk<BasicDataObject<std::string>>::WriteArrays(std::ofstream & stream)
+	{
+		mM2Array.SetInternalOffset(mValues.size() == 0 ? 0 : mValues[0].GetRelPos());
+		mM2Array.SetInternalSize(mValues.size() == 0 ? 0 : mValues[0].size());
+		stream << mM2Array;
 
+
+		// WOHOOOOOOOOOOOOOOOOOOOOOOOOO :D
+
+	}
 	template<typename Type>
 	inline void DataChunk<Type>::WriteValues(std::ofstream & stream)
 	{

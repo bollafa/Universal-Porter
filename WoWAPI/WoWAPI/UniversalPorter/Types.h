@@ -433,5 +433,22 @@ namespace UniversalPorter
 		M2VertexPolicy() : mInternalData() {}
 	};
 
-
+	class M2TexturePolicy
+	{
+		friend M2Policy;
+	private:
+		struct InternalData
+		{
+			uint32_t type = 0;          // see below
+			uint32_t flags = 0;         // see below
+			M2Array filename; // for non-hardcoded textures (type != 0), this still points to a zero-sized string
+		}mInternalData;
+	protected:
+		 DataObject< DataChunk<BasicDataObject<std::string>  > >  mFilename;
+		const void write(std::ofstream& stream);
+		size_t GetSize() { return sizeof(InternalData); }
+	public:
+		M2TexturePolicy() {}
+		void SetFileName(const DataObject< DataChunk<BasicDataObject<std::string>  > >& mTexturePath);
+	};
 }

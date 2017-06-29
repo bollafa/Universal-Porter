@@ -22,3 +22,14 @@ const void UniversalPorter::M2VertexPolicy::write(std::ofstream & stream)
 {
 	stream.write((char*)&mInternalData, GetSize());
 }
+
+const void UniversalPorter::M2TexturePolicy::write(std::ofstream & stream)
+{
+	mInternalData.filename = mFilename.GetRelArray();
+	stream.write((char*)&mInternalData, GetSize());
+}
+
+void UniversalPorter::M2TexturePolicy::SetFileName(const DataObject<DataChunk<BasicDataObject<std::string>>>& mTexturePath)
+{
+	mFilename = mTexturePath;
+}

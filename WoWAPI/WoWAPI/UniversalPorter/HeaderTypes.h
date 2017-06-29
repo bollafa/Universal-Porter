@@ -13,6 +13,7 @@ namespace UniversalPorter
 		std::vector<DataObject<M2BonePolicy>> mBones;
 		std::vector<DataObject<BasicDataObject<uint16_t>>> mBoneLookup;
 		std::vector<DataObject<M2VertexPolicy>> mVertices;
+		std::vector<DataObject<M2TexturePolicy>> mTextures;
 	protected:
 		const void write(std::ofstream& stream);
 		size_t GetSize() { return sizeof(M2Policy); }

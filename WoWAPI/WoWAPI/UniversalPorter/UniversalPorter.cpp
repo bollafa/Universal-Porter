@@ -137,7 +137,36 @@ const void UniversalPorter::M2Policy::write(std::ofstream & stream)
 	{
 		stream << *it;
 	}
-
+	/*TEXTURE PARSING*/
+	mHeader.mInternalData.textures.SetInternalData(mTextures.size(), stream.tellp());
+	for (auto it = mTextures.begin(); it != mTextures.end(); ++it)
+	{
+		stream << *it;
+	}
+	uint32_t mTOld = stream.tellp();
+	for (auto it = mTextures.begin(); it != mTextures.end(); ++it)
+	{
+		stream << it->mFilename;
+	}
+	for (auto it = mTextures.begin(); it != mTextures.end(); ++it)
+	{
+		it->mFilename.SetTestMode(false);
+		stream << it->mFilename;
+	}
+	stream.seekp(mTOld, std::ios_base::beg);
+	for (auto it = mTextures.begin(); it != mTextures.end(); ++it)
+	{
+		it->mFilename.SetTestMode(true);
+		stream << it->mFilename;
+	}
+	stream.seekp(mHeader.mInternalData.textures.mInternalData.mOffset, std::ios_base::beg);
+	for (auto it = mTextures.begin(); it != mTextures.end(); ++it)
+	{
+		
+		stream << *it;
+	}
+	/* END TEXTURE PARSING*/
+	/*FINAL REWRITE OF HEADER*/
 	stream.seekp(0, std::ios_base::beg);
 	mHeader.write(stream);
 }
@@ -174,13 +203,25 @@ void UniversalPorter::M2Policy::AddDummyGlobalSeq() // Add dummy stuff function,
 			BasicDataObject<uint16_t> bonelookup = 1337;
 			mBoneLookup.push_back(bonelookup);
 			mBoneLookup.push_back(bonelookup);
+
 		}
 			
 		mBones.push_back(tempBone);
 
 	}
 		
+	DataObject<M2TexturePolicy> vTempTexture;
+	DataObject<DataChunk<BasicDataObject<std::string>>> vTempFileName;
+	vTempFileName.AddValue(DataObject<BasicDataObject<std::string>>(BasicDataObject<std::string>("Hello")));
+	vTempTexture.SetFileName(vTempFileName);
 
+	DataObject<M2TexturePolicy> vSTempTexture;
+	DataObject<DataChunk<BasicDataObject<std::string>>> vSTempFileName;
+	vSTempFileName.AddValue(DataObject<BasicDataObject<std::string>>(BasicDataObject<std::string>("L33T")));
+	vSTempTexture.SetFileName(vSTempFileName);
+
+	mTextures.push_back(vTempTexture);
+	mTextures.push_back(vSTempTexture);
 }
 
 
