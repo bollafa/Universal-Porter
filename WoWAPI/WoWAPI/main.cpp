@@ -51,11 +51,24 @@ void main()
 	//fout.close();
 	///* PLAYGROUND END */
 	//std::cout << vTemp.global.size() << '\n';
-	DataObject<M2Policy> M2File;
+	
+	
+	/*DataObject<M2Policy> M2File;
 	std::ofstream TestFile("Test/Testing.m2", std::ios::out | std::ios::binary);
 	// Let's see aa
 	M2File.SetName("Visit Model-changing.com! Thanks!!!");
 	M2File.AddDummyGlobalSeq();
 	TestFile << M2File;
-	TestFile.close();
+	TestFile.close();*/
+	std::ofstream TestM2File("Test/Testing.m2", std::ios::out | std::ios::binary);
+	std::ofstream TestSkinFile("Test/Testing01.skin", std::ios::out | std::ios::binary);
+	UniversalPorterMgr TestPortFile;
+	TestPortFile.SetName("Visit Model-changing.com! Thanks!!!");
+	TestPortFile.M2File.AddDummyGlobalSeq();
+	TestPortFile.WriteM2(TestM2File);
+
+	TestPortFile.mSkinFile.AddDummyCrap();
+	TestPortFile.WriteSkin(TestSkinFile);
+	TestM2File.close();
+	TestSkinFile.close();
 }

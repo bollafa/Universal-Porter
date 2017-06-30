@@ -33,3 +33,13 @@ void UniversalPorter::M2TexturePolicy::SetFileName(const DataObject<DataChunk<Ba
 {
 	mFilename = mTexturePath;
 }
+
+const void UniversalPorter::M2SubmeshPolicy::write(std::ofstream & stream)
+{
+	stream.write((char*)&mInternalData, GetSize());
+}
+
+const void UniversalPorter::M2Batch::write(std::ofstream & stream)
+{
+	stream.write((char*)&mInternalData, GetSize());
+}

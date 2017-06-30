@@ -451,4 +451,72 @@ namespace UniversalPorter
 		M2TexturePolicy() {}
 		void SetFileName(const DataObject< DataChunk<BasicDataObject<std::string>  > >& mTexturePath);
 	};
+	struct M2Face
+	{
+		unsigned short mFirst = 0;
+		unsigned short mSecond = 0;
+		unsigned short mThird = 0;
+		M2Face() {}
+		M2Face(uint16_t _f, uint16_t _s, uint16_t _t) : mFirst(_f), mSecond(_s),mThird(_t) {}
+	};
+	struct M2VertexProp // This two could actually be just a tuple. But who cares ... im lazy
+	{
+		uint8_t mFirstBone;
+		uint8_t mSecondBone;
+		uint8_t mThirdBone;
+		uint8_t mFourthBone;
+	};
+	class M2SubmeshPolicy
+	{
+	private:
+		struct InternalData
+		{
+			uint16_t skinSectionId = 0;       // Mesh part ID, see below.
+			uint16_t Level = 0;               // (level << 16) is added (|ed) to startTriangle and alike to avoid having to increase those fields to uint32s.
+			uint16_t vertexStart = 0;         // Starting vertex number.
+			uint16_t vertexCount = 0;         // Number of vertices.
+			uint16_t indexStart = 0;          // Starting triangle index (that's 3* the number of triangles drawn so far).
+			uint16_t indexCount = 0;          // Number of triangle indices.
+			uint16_t boneCount = 0;           // Number of elements in the bone lookup table.
+			uint16_t boneComboIndex = 0;      // Starting index in the bone lookup table.
+			uint16_t boneInfluences = 0;      // <= 4
+										  // from <=BC documentation: Highest number of bones needed at one time in this Submesh --Tinyn (wowdev.org) 
+										  // In 2.x this is the amount of of bones up the parent-chain affecting the submesh --NaK
+			uint16_t centerBoneIndex = 0;
+			C3Vector centerPosition = { 0,0,0 };     // Average position of all the vertices in the sub mesh.
+//#if VERSION >= BC 
+			C3Vector sortCenterPosition = { 0,0,0 }; // The center of the box when an axis aligned box is built around the vertices in the submesh.
+			float sortRadius = 0;             // Distance of the vertex farthest from CenterBoundingBox.
+//#endif
+		}mInternalData;
+	protected:
+		const void write(std::ofstream& stream);
+		size_t GetSize() { return sizeof(InternalData); }
+	public:
+	};
+
+	class M2Batch
+	{
+	private:
+		struct InternalData
+		{
+			uint8_t flags = 16;                       // Usually 16 for static textures, and 0 for animated textures. &0x1: materials invert something; &0x2: transform &0x4: projected texture; &0x10: something batch compatible; &0x20: projected texture?; &0x40: use textureWeights
+			int8_t priorityPlane = 0;
+			uint16_t shader_id = 0;                  // See below.
+			uint16_t skinSectionIndex = 0;           // A duplicate entry of a submesh from the list above.
+			uint16_t geosetIndex = 0;                // See below.
+			uint16_t colorIndex = -1;                 // A Color out of the Colors-Block or -1 if none.
+			uint16_t materialIndex = 0;              // The renderflags used on this texture-unit.
+			uint16_t materialLayer = 0;              // Capped at 7 (see CM2Scene::BeginDraw)
+			uint16_t textureCount = 1;               // 1 to 4. See below. Also seems to be the number of textures to load, starting at the texture lookup in the next field (0x10).
+			uint16_t textureComboIndex = 0;          // Index into Texture lookup table
+			uint16_t textureCoordComboIndex = 0;     // Index into the texture unit lookup table.
+			uint16_t textureWeightComboIndex = 0;    // Index into transparency lookup table.
+			uint16_t textureTransformComboIndex = 0; // Index into uvanimation lookup table. 
+		}mInternalData;
+	protected:
+		const void write(std::ofstream& stream);
+		size_t GetSize() { return sizeof(InternalData); }
+	public:
+	};
 }

@@ -1,8 +1,10 @@
 #pragma once
 #include <fstream>
 #include <memory>
+
 namespace UniversalPorter
 {
+	
 	class M2Policy;
 	//class M2SequencePolicy;
 	//class M2BonePolicy;
@@ -135,54 +137,7 @@ namespace UniversalPorter
 		const M2Array& GetRelArray() { return mM2Array; }
 		DataChunk() {}
 	};
-	class HeaderPolicy
-	{
-	private:
 	
-		struct InternalData
-		{
-			uint32_t magic = _byteswap_ulong('MD20');                                       // "MD20". Legion uses a chunked file format starting with MD21.
-			uint32_t version = 264;
-			M2Array name;                                   // should be globally unique, used to reload by name in internal clients
-			uint32_t Flags = 0;
-			M2Array global_loops;						// Timestamps used in global looping animations.
-			M2Array sequences;                       // Information about the animations in the model.
-			M2Array sequence_lookups;
-			/*#if  VERSION <= BC
-			M2Array< ? > playable_animation_lookup;
-			#endif*/
-			M2Array bones;
-			M2Array key_bone_lookup;
-			M2Array vertices;
-			// #if VERSION <= BC
-			//
-			//#else
-			uint32_t NumSkinProfiles = 0;
-			//#endif
-			M2Array colors; // I'll implement them if they are needed, but honestly i dont know what they do
-			M2Array textures;
-			/* Let's see : */
-
-			M2Array texture_weights;            // Transparency of textures.
-/*#if  VERSION <= BC
-			M2Array< ? > unknown;
-#endif*/
-			M2Array texture_transforms;
-			M2Array replacable_texture_lookup;
-			M2Array materials;                       // Blending modes / render flags.
-			M2Array bone_lookup_table;
-			M2Array texture_lookup_table;
-			M2Array tex_unit_lookup_table;             // >= Cata : unused
-			M2Array transparency_lookup_table;
-			M2Array texture_transforms_lookup_table;
-			InternalData() {}
-		}mInternalData;
-	protected:
-		
-		size_t GetSize() { return sizeof(InternalData); }
-		const void write(std::ofstream& stream);
-		friend M2Policy;
-	};
 
 
 
